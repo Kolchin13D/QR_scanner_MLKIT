@@ -27,7 +27,7 @@
             android:textStyle="bold"
             android:text="Title text text"
             android:textAlignment="center"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 

@@ -29,18 +29,16 @@ public class ImageAnalyser implements ImageAnalysis.Analyzer {
     private FragmentManager fragmentManager;
     private BottomDialog bottomDialog;
 
-    public ImageAnalyser(FragmentManager fragmentManager, BottomDialog bottomDialog) {
+    public ImageAnalyser(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
         bottomDialog = new BottomDialog();
-    }
-
-    public ImageAnalyser(FragmentManager supportFragmentManager) {
     }
 
     @Override
     public void analyze(@NonNull ImageProxy image) {
         ScanBarCode(image);
     }
+
 
     private void ScanBarCode(ImageProxy image) {
         @SuppressLint("UnsafeOptInUsageError") Image image1 = image.getImage();
@@ -68,7 +66,7 @@ public class ImageAnalyser implements ImageAnalysis.Analyzer {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(bottomDialog.getContext(), "Failed to read code", Toast.LENGTH_SHORT).show();
+
                     }
                 })
                 .addOnCompleteListener(new OnCompleteListener<List<Barcode>>() {
@@ -80,37 +78,30 @@ public class ImageAnalyser implements ImageAnalysis.Analyzer {
     }
 
     private void readerBarcodeData(List<Barcode> barcodes) {
-
         for (Barcode barcode : barcodes) {
             Rect bounds = barcode.getBoundingBox();
             Point[] corners = barcode.getCornerPoints();
 
             String rawValue = barcode.getRawValue();
+
             int valueType = barcode.getValueType();
-
+            // See API reference for complete list of supported types
             switch (valueType) {
-
                 case Barcode.TYPE_WIFI:
-
                     String ssid = barcode.getWifi().getSsid();
                     String password = barcode.getWifi().getPassword();
                     int type = barcode.getWifi().getEncryptionType();
                     break;
-
                 case Barcode.TYPE_URL:
-
                     if (!bottomDialog.isAdded()) {
                         bottomDialog.show(fragmentManager, "");
                     }
-
                     bottomDialog.fetchURL(barcode.getUrl().getUrl());
                     String title = barcode.getUrl().getTitle();
                     String url = barcode.getUrl().getUrl();
                     break;
-
             }
-
         }
-
     }
 }
+
